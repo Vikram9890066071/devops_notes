@@ -1,0 +1,261 @@
+Create link for file below are the steps:- 
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ cat /home/ubuntu/vikram_practice/vikram1/vikram2/vikram3/demo.txt
+Hi Vikram How are you today...!!!
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ ln -s /home/ubuntu/vikram_practice/vikram1/vikram2/vikram3/demo.txt cmds 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ ll
+total 20
+drwxrwxr-x 3 ubuntu ubuntu 4096 Dec  7 16:27 ./
+drwxr-x--- 5 ubuntu ubuntu 4096 Dec  7 16:23 ../
+-rw-rw-r-- 1 ubuntu ubuntu  120 Dec  7 16:02 Vikram.txt
+lrwxrwxrwx 1 ubuntu ubuntu   61 Dec  7 16:27 cmds -> /home/ubuntu/vikram_practice/vikram1/vikram2/vikram3/demo.txt
+drwxrwxr-x 3 ubuntu ubuntu 4096 Dec  7 16:17 vikram1/
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ cat cmds
+Hi Vikram How are you today...!!!
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+
+--------------------------------------------------------------------------------------------------
+
+To create folder in to folder:-
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ mkdir -p vikram1/vikram2/vikram3
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ ll
+total 16
+drwxrwxr-x 3 ubuntu ubuntu 4096 Dec  7 16:17 ./
+drwxr-x--- 5 ubuntu ubuntu 4096 Dec  7 16:10 ../
+-rw-rw-r-- 1 ubuntu ubuntu  120 Dec  7 16:02 Vikram.txt
+drwxrwxr-x 3 ubuntu ubuntu 4096 Dec  7 16:17 vikram1/ 
+
+--------------------------------------------------------------------------------------------------
+TO search pattern in to file
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ grep -i vikra demo.txt
+Hi Vikram How are you today...!!!
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ grep Vikram demo.txt
+Hi Vikram How are you today...!!!
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+
+---------------------------------------------------------------------------------------------------
+To search the pattern in all files use *
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ grep -i vikra *
+cmds:Hi Vikram How are you today...!!!
+grep: vikram1: Is a directory
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+
+To show dir in dir pattern:-
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ grep -iR vikra *
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ grep -R vikra *
+
+---------------------------------------------------------------------------------------------------
+
+To skip the particular line
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice$ grep -vi vikram /home/ubuntu/vikram_practice/vikram1/vikram2/vikram3/demo.txt
+ifdfdf
+dfdfd
+fdf
+f
+dff
+df
+dfd
+fd
+fdf
+df
+fd
+dfd
+ffd
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ cat /home/ubuntu/vikram_practice/vikram1/vikram2/vikram3/demo.txt
+Hi Vikram How are you today...!!!
+ifdfdf
+dfdfd
+fdf
+f
+dff
+df
+dfd
+fd
+fdf
+df
+fd
+dfd
+ffd
+
+ubuntu@ip-172-31-82-20:~/vikram_practice$ 
+
+------------------------------------------------------------------------------------------------
+
+TO replece the string in to file:- 
+Example:- Replece Vikram to VIkram_Waghmare
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ cat demo.txt
+Hi Vikram How are you today...!!!
+ifdfdf
+dfdfd
+fdf
+f
+dff
+df
+dfd
+fd
+fdf
+df
+fd
+dfd
+ffd
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ sed -i 's/Vikram/VIkram_Waghmare/g' demo.txt
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ cat demo.txt
+Hi VIkram_Waghmare How are you today...!!!
+ifdfdf
+dfdfd
+fdf
+f
+dff
+df
+dfd
+fd
+fdf
+df
+fd
+dfd
+ffd
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+
+-----------------------------------------------------------------------------------------------------------------------
+grep <text> * -R command will search for the text in all the file, in all the subdirectories.
+
+Question 3:
+Select command to print third column from give csv file content
+
+John,Doe,120 jefferson st.,Riverside, NJ, 08075
+Jack,McGinnis,220 hobo Av.,Phila, PA,09119
+"John ""Da Man""",Repici,120 Jefferson St.,Riverside, NJ,08075
+Stephen,Tyler,"7452 Terrace ""At the Plaza"" road",SomeTown,SD, 91234
+,Blankman,,SomeTown, SD, 00298
+"Joan ""the bone"", Anne",Jet,"9th, at Terrace plc",Desert City,CO,00123
+
+ANS:- cut -d, -f3 <csvfile>
+
+-----------------------------------------------------------------------------------------------------------------------
+TO change the live file contents:-  
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ uptime
+ 17:29:53 up  1:34,  1 user,  load average: 0.00, 0.00, 0.00
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ uptime >> demo.txt
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ cat demo.txt
+Hi VIkram_Waghmare How are you today...!!!
+ifdfdf
+dfdfd
+fdf
+f
+dff
+df
+dfd
+fd
+fdf
+df
+fd
+dfd
+ffd
+
+ 17:30:07 up  1:35,  1 user,  load average: 0.00, 0.00, 0.00
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ uptime > demo.txt
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ cat demo.txt
+ 17:30:36 up  1:35,  1 user,  load average: 0.00, 0.00, 0.00
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+
+---------------------------------------------------------------------------------------------------------------------
+Common Commands:- 
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ free -m
+               total        used        free      shared  buff/cache   available
+Mem:             957         148         442           0         366         657
+Swap:              0           0           0
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       7.6G  2.5G  5.2G  33% /
+tmpfs           479M     0  479M   0% /dev/shm
+tmpfs           192M  856K  191M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            96M  4.0K   96M   1% /run/user/1000
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+
+-----------------------------------------------------------------------------
+
+To print the number of the lines in to the files:- 
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ wc -l demo.txt
+29 demo.txt
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+
+
+To print the number of files and folder is present in current directory:- 
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ ll
+total 16
+drwxrwxr-x 2 ubuntu ubuntu 4096 Dec  7 17:41 ./
+drwxrwxr-x 3 ubuntu ubuntu 4096 Dec  7 16:17 ../
+-rw-rw-r-- 1 ubuntu ubuntu  201 Dec  7 17:39 demo.txt
+-rw-rw-r-- 1 ubuntu ubuntu   23 Dec  7 17:41 vikram.txt
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ ls | wc -l
+2
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+
+
+To search the file:- 
+
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ ls | grep vikram.txt
+vikram.txt
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+ubuntu@ip-172-31-82-20:~/vikram_practice/vikram1/vikram2/vikram3$ 
+
+
+

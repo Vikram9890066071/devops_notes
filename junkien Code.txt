@@ -1,0 +1,252 @@
+pipeline {
+    agent { label 'slave1' }
+
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+               echo "Perform SCM Checkout"
+			   git 'https://github.com/Vikram9890066071/java-mvn-springbootapp.git'		   
+            }
+        }
+        stage('Application Build') {
+            steps {
+                echo "Perform Application Build"
+				sh 'mvn clean package'
+            }
+        }
+        stage('Deploy to Test Server') {
+            steps {
+                echo "Perform Application Deployment"
+            }
+        }
+    }
+}	
+
+
+https://github.com/Vikram9890066071/java-mvn-springbootapp.git
+
+---------------------------------------------------------------------------------------------------
+
+sshPublisher(publishers: [sshPublisherDesc(configName: 'Tomcat-Server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: '/target/*.war	')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+
+
+pipeline {
+    agent { label 'slave1' }
+
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+               echo "Perform SCM Checkout"
+			   git 'https://github.com/Vikram9890066071/java-mvn-springbootapp.git'		   
+            }
+        }
+        stage('Application Build') {
+            steps {
+                echo "Perform Application Build"
+				sh 'mvn clean package'
+            }
+        }
+        stage('Deploy to Test Server') {
+            steps {
+                script{
+				   sshPublisher(publishers: [sshPublisherDesc(configName: 'Tomcat-Server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: '/target/*.war	')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                }
+            }
+        }
+    }
+}
+
+---------------------------------------
+
+pipeline {
+    agent { label 'slave1' }
+
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+               echo "Perform SCM Checkout"
+			   git 'https://github.com/Vikram9890066071/java-mvn-springbootapp.git'			   
+            }
+             post {
+                failure {
+                  sh "echo 'Send mail on failure'"
+					mail bcc: 'vikramwaghmare210@gmail.com', body: '''Job Status: "Please go to ${BUILD_URL} and verify the build"''', cc: 'vikramwaghmare210@gmail.com', from: '', replyTo: '', subject: 'SCM-Checkout Failed ', to: 'vikramwaghmare210@gmail.com'                }
+              }
+        }
+        stage('Application Build') {
+            steps {
+                echo "Perform Application Build"
+				sh 'mvn clean package'
+            }
+             post {
+                failure {
+                  sh "echo 'Send mail on failure'"
+					mail bcc: 'vikramwaghmare210@gmail.com', body: '''Job Status: "Please go to ${BUILD_URL} and verify the build"''', cc: 'vikramwaghmare210@gmail.com', from: '', replyTo: '', subject: 'Application Build failed ', to: 'vikramwaghmare210@gmail.com'                }
+              }
+        }
+        stage('Deploy to Test Server') {
+            steps {
+                script{
+                   sshPublisher(publishers: [sshPublisherDesc(configName: 'Tomcat-Server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                }
+            }
+             post {
+                success {
+                  sh "echo 'Send mail on failure'"
+					mail bcc: 'vikramwaghmare210@gmail.com', body: '''Job Status: "Please go to ${BUILD_URL} and verify the build"''', cc: 'vikramwaghmare210@gmail.com', from: '', replyTo: '', subject: 'Application Deployment Successful ', to: 'vikramwaghmare210@gmail.com'                }
+                failure {
+                  sh "echo 'Send mail on failure'"
+                    mail bcc: 'vikramwaghmare210@gmail.com', body: '''Job Status: "Please go to ${BUILD_URL} and verify the build"''', cc: 'vikramwaghmare210@gmail.com', from: '', replyTo: '', subject: 'Application Deployment failed ', to: 'vikramwaghmare210@gmail.com'                }
+              }
+        }
+    }
+}	
+
+----------------------
+pipeline {
+    agent { label 'slave1' }
+
+	environment {	
+		DOCKERHUB_CREDENTIALS=credentials('sadockerlogin')
+	}
+	
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+               echo "Perform SCM Checkout"
+			   git 'https://github.com/Vikram9890066071/java-mvn-springbootapp.git'		    
+            }
+        }
+        stage('Application Build') {
+            steps {
+                echo "Perform Application Build"
+				sh 'mvn clean package'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+				sh 'docker version'
+				sh "docker build -t vsw210/sa-mywebapp:${BUILD_NUMBER} ."
+				sh 'docker image list'
+				sh "docker tag vsw210/sa-mywebapp:${BUILD_NUMBER} vsw210/sa-mywebapp:latest"
+            }
+        }
+		stage('Login2DockerHub') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+		stage('Publish_to_Docker_Registry') {
+			steps {
+				sh "docker push vsw210/sa-mywebapp:latest"
+			}
+		}
+        stage('Deploy to Kubernetes Cluster') {
+            steps {
+                script{
+                   sshPublisher(publishers: [sshPublisherDesc(configName: 'SA-Jan09-KMaster', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl apply -f kubedeploy.yaml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                }
+            }
+        }
+    }
+}
+
+
+--------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vsw210-eta-deploy
+  labels:
+    app: vsw210-eta-deploy-lbl
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vsw210-eta-app
+  template:
+    metadata:
+      labels:
+        app: vsw210-eta-app
+    spec:
+      containers:
+      - name: vsw210-eta-container
+        image: vsw210eta/sa-mywebapp:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vsw210-eta-np-service
+  labels:
+    app: vsw210-eta-np-app
+spec:
+  selector:
+    app: vsw210-eta-deploy-lbl
+
+  type: NodePort
+  ports:
+  - nodePort: 31028
+    port: 8080
+    targetPort: 8080
+
+
+https://github.com/Vikram9890066071/java-mvn-springbootapp.git
+
+-------------------
+
+sshPublisher(publishers: [sshPublisherDesc(configName: 'SA-Jan09-KMaster', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl apply -f kubedeploy.yaml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+
+
+pipeline {
+    agent { label 'slave1' }
+
+	environment {	
+		DOCKERHUB_CREDENTIALS=credentials('sadockerlogin')
+	}
+	
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+               echo "Perform SCM Checkout"
+			   git 'https://github.com/Vikram9890066071/java-mvn-springbootapp.git'
+				git 'https://github.com/SA-Team-DevOps-03-Dec-24/java-mvn-springbootapp.git'	
+            }
+        }
+        stage('Application Build') {
+            steps {
+                echo "Perform Application Build"
+				sh 'mvn clean package'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+				sh 'docker version'
+				sh "docker build -t vsw210/sa-mywebapp:${BUILD_NUMBER} ."
+				sh 'docker image list'
+				sh "docker tag vsw210/sa-mywebapp:${BUILD_NUMBER} vsw210/sa-mywebapp:latest"
+            }
+        }
+		stage('Login2DockerHub') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+		stage('Publish_to_Docker_Registry') {
+			steps {
+				sh "docker push vsw210/sa-mywebapp:latest"
+			}
+		}
+        stage('Deploy to Kubernetes Cluster') {
+            steps {
+                script{
+						sshPublisher(publishers: [sshPublisherDesc(configName: 'SA-Jan09-KMaster', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl apply -f kubedeploy.yaml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                }
+            }
+        }
+    }
+}
